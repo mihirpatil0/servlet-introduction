@@ -9,14 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 @WebServlet(
         description = "Login Servlet Testing",
-        urlPatterns = {"/LoginServlet"},
-        initParams = {
-                @WebInitParam(name = "user", value = "mihir"),
-                @WebInitParam(name = "password", value = "mihir")
-        }
+        urlPatterns = {"/LoginServlet"}
 )
 public class LoginServlet extends HttpServlet {
     @Override
@@ -24,10 +21,9 @@ public class LoginServlet extends HttpServlet {
         //get request parameter for userid and password.
         String user = req.getParameter("user");
         String pwd = req.getParameter("pwd");
-        //get servlet config init params.
-        String userID = getServletConfig().getInitParameter("user");
-        String password = getServletConfig().getInitParameter("password");
-        if (userID.equals(user) && password.equals(pwd))
+        boolean isTrueName = Pattern.compile("^[A-Z]{1}[A-z a-z]{2,}$").matcher(user).matches();
+        boolean isTruePassword = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$").matcher(pwd).matches();
+        if (isTrueName == true && isTruePassword == true)
         {
             req.setAttribute("user",user);
             req.getRequestDispatcher("LoginSuccess.jsp").forward(req,resp);
